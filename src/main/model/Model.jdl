@@ -1,0 +1,104 @@
+
+// ENUMERADOS que contienen los tipos y estados
+
+/** Monedas soportadas */
+enum CurrencyType {
+    EUR, USD, JPY, BGN, CZK, DKK, GBP, HUF, PLN, RON, SEK, CHF, ISK, NOK, HRK, RUB, TRY, AUD, BRL, CAD, CNY, HKD, IDR, ILS, INR, KRW, MXN, MYR, NZD, PHP, SGD, THB, ZAR
+}
+/** Estados de los eventos */
+enum EventState {
+    NEW, FINISHED
+}
+/**
+ * Estados de los gastos
+ */
+enum ExpenseState {
+    NEW, PENDING, DUPLICATED
+}
+enum ParticipantType {
+    OWNER, MEMBER
+}
+// ENTIDADES
+/**
+ * Entidad Evento.
+ */
+entity Event {
+    /** name */
+    name String required
+    /** description */
+    description String
+    /** Estado del evento */
+    state EventState
+    /** Tipo de cambio por defecto del evento */
+    currency CurrencyType required
+}
+/**
+ * Entidad gasto.
+ */
+entity Expense {
+    /** name */
+    name String required
+    /** description */
+    description String
+    /** Estado del gasto */
+    state ExpenseState
+    /** Coste en la moneda del evento */
+    cost Float required
+    /** Coste en la moneda del evento */
+    originalCost Float required
+    /** fecha del gasto */
+    date Instant required
+    /** moneda */
+    currencyType CurrencyType required
+    /** ticket o justificante */
+    ticket ImageBlob
+}
+/**
+ * Entidad moneda.
+ */
+entity Currency {
+    /** money */
+    currency CurrencyType required unique
+    /** value */
+    value Float required min(0)
+    /** date of lass updated */
+    lastUpdated Instant required
+}
+entity UserExtra
+
+/**
+ * Entidad con información extra del usuario para permitir relaciones
+ */
+entity Participant {
+	type ParticipantType required
+}
+
+
+// RELACIONES
+relationship OneToOne {
+	// Necesaria para simular relaciones de la entidad User que es propia de jhipster
+	UserExtra{User(login)} to User
+}
+
+/**
+ * Relaciones uno a muchos
+ */
+relationship OneToMany {
+	//Un evento puede tener varios gastos
+    Event{expenses} to Expense{event}
+    // Un evento puede tener varios participantes
+    Event{participants} to Participant{event}
+    // Un usuario puede ser participante en varios eventos
+    UserExtra{participant} to Participant
+    //Un participante puede tener varios gastos
+    Participant{expenses} to Expense{participant}
+}
+
+dto Event, Expense, Participant, UserExtra, Currency with mapstruct
+
+filter Event, Expense, Participant, UserExtra, Currency
+
+service Event, Expense, Participant, UserExtra, Currency with serviceImpl
+
+//Paginación de las diferentes entidades
+paginate Event, Expense, Participant, UserExtra with infinite-scroll

@@ -1,0 +1,42 @@
+{
+    "name": "Ticket",
+    "fields": [
+        {
+            "fieldName": "name",
+            "javadoc": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "imageUrl",
+            "javadoc": "imagen",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "expense",
+            "otherEntityRelationshipName": "tickets",
+            "relationshipName": "expense",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20200616095200",
+    "javadoc": "Entidad ticket para almacenar los ficheros",
+    "entityTableName": "ticket",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
+    "clientRootFolder": "",
+    "applications": "*"
+}

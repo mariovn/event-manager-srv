@@ -1,0 +1,97 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="mariovaldes (generated)" id="1610315136446-1">
+        <createTable tableName="currency">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="currencyPK"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_updated" type="datetime(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="FLOAT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-2">
+        <createTable tableName="event">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="eventPK"/>
+            </column>
+            <column name="currency" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-3">
+        <createTable tableName="expense">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="expensePK"/>
+            </column>
+            <column name="cost" type="FLOAT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="VARCHAR(255)"/>
+            <column name="ticket" type="LONGBLOB"/>
+            <column name="ticket_content_type" type="VARCHAR(255)"/>
+            <column name="event_id" type="BIGINT"/>
+            <column name="participant_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-4">
+        <createTable tableName="participant">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="participantPK"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="event_id" type="BIGINT"/>
+            <column name="user_extra_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-5">
+        <createTable tableName="user_extra">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_extraPK"/>
+            </column>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-6">
+        <addUniqueConstraint columnNames="currency" constraintName="UC_CURRENCYCURRENCY_COL" tableName="currency"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-7">
+        <addUniqueConstraint columnNames="user_id" constraintName="UC_USER_EXTRAUSER_ID_COL" tableName="user_extra"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-8">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="expense" constraintName="FK33vnonl4r0y7r0e2qy06n5nfg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-9">
+        <addForeignKeyConstraint baseColumnNames="user_extra_id" baseTableName="participant" constraintName="FK5tg3hsgvgyxoar0duv5tflqlm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="user_extra" validate="true"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-10">
+        <addForeignKeyConstraint baseColumnNames="participant_id" baseTableName="expense" constraintName="FKgnkxk90dvtddivkrm01r99b72" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="participant" validate="true"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-11">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_extra" constraintName="FKj6o22j2hl0suca5i7f77olhro" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="jhi_user" validate="true"/>
+    </changeSet>
+    <changeSet author="mariovaldes (generated)" id="1610315136446-12">
+        <addForeignKeyConstraint baseColumnNames="event_id" baseTableName="participant" constraintName="FKojeqkvv72xcx0ytdqkik7objq" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="event" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
