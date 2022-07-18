@@ -8,11 +8,13 @@ import com.mariovn.eventmanager.repository.UserRepository;
 import com.mariovn.eventmanager.security.AuthoritiesConstants;
 import com.mariovn.eventmanager.security.SecurityUtils;
 import com.mariovn.eventmanager.service.dto.UserDTO;
+import com.mariovn.eventmanager.service.dto.UserExtraDTO;
 
 import io.github.jhipster.security.RandomUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +36,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final Logger log = LoggerFactory.getLogger(UserService.class);
-
+    
     private final UserRepository userRepository;
 
     private final PasswordEncoder passwordEncoder;
@@ -42,9 +44,12 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+    
+    @Autowired
+    private UserExtraService userExtraService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, CacheManager cacheManager) {
-        this.userRepository = userRepository;
+		this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
@@ -120,6 +125,14 @@ public class UserService {
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
+        
+        UserExtraDTO userExtraDTO = new UserExtraDTO();
+        userExtraDTO.setId(newUser.getId());
+        userExtraDTO.setUserId(newUser.getId());
+        userExtraDTO.setUserLogin(newUser.getLogin());
+        
+        userExtraService.save(userExtraDTO);
+        
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -162,6 +175,14 @@ public class UserService {
                 .collect(Collectors.toSet());
             user.setAuthorities(authorities);
         }
+        
+        UserExtraDTO userExtraDTO = new UserExtraDTO();
+        userExtraDTO.setId(user.getId());
+        userExtraDTO.setUserId(user.getId());
+        userExtraDTO.setUserLogin(user.getLogin());
+        
+        userExtraService.save(userExtraDTO);
+        
         userRepository.save(user);
         this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
@@ -222,6 +243,8 @@ public class UserService {
                     .filter(Optional::isPresent)
                     .map(Optional::get)
                     .forEach(managedAuthorities::add);
+           
+                
                 this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
                 return user;

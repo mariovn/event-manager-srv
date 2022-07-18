@@ -151,7 +151,14 @@ public class AccountResource {
     public void requestPasswordReset(@RequestBody String mail) {
         Optional<User> user = userService.requestPasswordReset(mail);
         if (user.isPresent()) {
-            mailService.sendPasswordResetMail(user.get());
+        	
+        	String newPassword = new Random().ints(10, 33, 122).collect(StringBuilder::new,
+        	        StringBuilder::appendCodePoint, StringBuilder::append)
+        	        .toString();
+        	
+        	userService.completePasswordReset(newPassword, user.get().getResetKey());
+        	        			
+            mailService.sendPasswordResetMail(user.get(), newPassword);
         } else {
             // Pretend the request has been successful to prevent checking which emails really exist
             // but log that an invalid attempt has been made
@@ -166,8 +173,8 @@ public class AccountResource {
      * @throws InvalidPasswordException {@code 400 (Bad Request)} if the password is incorrect.
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the password could not be reset.
      */
-    @PostMapping(path = "/account/reset-password/finish")
-    public void finishPasswordReset(@RequestBody KeyAndPasswordVM keyAndPassword) {
+    @GetMapping(path = "/account/reset-password/finish")
+    public void finishPasswordReset(@RequestParam KeyAndPasswordVM keyAndPassword) {
         if (!checkPasswordLength(keyAndPassword.getNewPassword())) {
             throw new InvalidPasswordException();
         }

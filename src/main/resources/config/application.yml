@@ -144,7 +144,7 @@ jhipster:
   #     allow-credentials: true
   #     max-age: 1800
   mail:
-    from: eventmanager@localhost
+    from: mario.valdes.novoa@gmail.com
   swagger:
     default-include-pattern: /api/.*
     title: eventmanager API
