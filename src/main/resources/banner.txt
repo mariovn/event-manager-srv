@@ -5,5 +5,4 @@
 |  |____    \    /    |  |____ |  |\   |     |  |        |  |  |  |  /  _____  \  |  |\   |  /  _____  \  |  |__| | |  |____ |  |\  \----.
 |_______|    \__/     |_______||__| \__|     |__|        |__|  |__| /__/     \__\ |__| \__| /__/     \__\  \______| |_______|| _| `._____|
 
-${AnsiColor.BRIGHT_BLUE}:: JHipster 🤓  :: Running Spring Boot ${spring-boot.version} ::
-:: https://www.jhipster.tech ::${AnsiColor.DEFAULT}
+${AnsiColor.BRIGHT_BLUE}:: EventManager :: Running Spring Boot ${spring-boot.version} ::

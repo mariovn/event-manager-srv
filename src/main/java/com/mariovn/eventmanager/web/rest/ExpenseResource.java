@@ -1,9 +1,14 @@
 package com.mariovn.eventmanager.web.rest;
 
 import com.mariovn.eventmanager.service.ExpenseService;
+import com.mariovn.eventmanager.service.ParticipantQueryService;
+import com.mariovn.eventmanager.service.ParticipantService;
 import com.mariovn.eventmanager.web.rest.errors.BadRequestAlertException;
 import com.mariovn.eventmanager.service.dto.ExpenseDTO;
 import com.mariovn.eventmanager.service.dto.ExpenseCriteria;
+import com.mariovn.eventmanager.domain.Participant;
+import com.mariovn.eventmanager.domain.User;
+import com.mariovn.eventmanager.repository.UserRepository;
 import com.mariovn.eventmanager.service.ExpenseQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -11,6 +16,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +24,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -43,6 +51,12 @@ public class ExpenseResource {
     private final ExpenseService expenseService;
 
     private final ExpenseQueryService expenseQueryService;
+    
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private ParticipantQueryService participantQueryService;
 
     public ExpenseResource(ExpenseService expenseService, ExpenseQueryService expenseQueryService) {
         this.expenseService = expenseService;
@@ -62,6 +76,15 @@ public class ExpenseResource {
         if (expenseDTO.getId() != null) {
             throw new BadRequestAlertException("A new expense cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        Optional<User> user = userRepository.findOneByLogin(authentication.getName());
+        
+        Participant participant = participantQueryService.findByUserAndEvent(user.get(), expenseDTO.getEventId());
+        
+        expenseDTO.setParticipantId(participant.getId());
+        
         ExpenseDTO result = expenseService.save(expenseDTO);
         return ResponseEntity.created(new URI("/api/expenses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
