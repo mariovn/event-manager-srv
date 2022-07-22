@@ -99,20 +99,23 @@ public class ExpenseServiceImpl implements ExpenseService {
 			}
         }
 
-        Participant participant = participantQueryService.findByUserAndEvent(user, eventId);
-		expense.setParticipant(participant);
-		
-		if (isDuplicated(expense)) {
+        if (isDuplicated(expense)) {
 			expense.setState(ExpenseState.DUPLICATED);
 		}
         
+        if (expense.getParticipant() == null) { 
+
+	        Participant participant = participantQueryService.findByUserAndEvent(user, eventId);
+			expense.setParticipant(participant);
+			
+			// Se actualiza el participante
+	        participant.addExpenses(expense);
+	        participantRepository.saveAndFlush(participant);
+        }
+		
 		// Se almacena el gasto
         expense = expenseRepository.saveAndFlush(expense);
-        
-        // Se actualiza el participante
-        participant.addExpenses(expense);
-        participantRepository.saveAndFlush(participant);
-        
+                
         // Se actualiza el evento
 		event.addExpenses(expense);
 		
@@ -248,10 +251,6 @@ public class ExpenseServiceImpl implements ExpenseService {
 			FloatFilter originalCostFilter = new FloatFilter();
 			originalCostFilter.setEquals(expense.getOriginalCost());
 			criteria.setOriginalCost(originalCostFilter);
-			
-			InstantFilter dateFilter = new InstantFilter();
-			dateFilter.setEquals(expense.getDate());
-			criteria.setDate(dateFilter);
 			
 			CurrencyTypeFilter currencyTypeFilter = new CurrencyTypeFilter();
 			currencyTypeFilter.equals(expense.getCurrencyType());

@@ -150,7 +150,11 @@ public class EventResumeService {
 				paragraph.add(new Paragraph(" "));
 				
 				try {
-					paragraph.add(Image.getInstance(expense.getTicket()));
+					
+					Image imagen = Image.getInstance(expense.getTicket());
+					imagen.scaleToFit(400L, 400L);
+					
+					paragraph.add(imagen);
 					
 					document.newPage();
 					document.add(paragraph);
