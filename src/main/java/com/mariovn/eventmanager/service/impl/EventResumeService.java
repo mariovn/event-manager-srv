@@ -69,8 +69,9 @@ public class EventResumeService {
 		document.add(new Paragraph(" "));
 		
 		// usuario
-		document.add(new Paragraph(user.getFirstName() + " " + user.getLastName() + " email: " 
-				+ user.getEmail(), PARAGRAPH_FONT));
+		document.add(new Paragraph((user.getFirstName() != null ? user.getFirstName() + " " : "" )
+				+ (user.getLastName() != null ? user.getLastName() + " " : "" )
+				+ "email: " + user.getEmail(), PARAGRAPH_FONT));
 		
 		document.add(new Paragraph(" "));
 		

@@ -187,3 +187,4 @@ public class EventResource {
     	return ResponseEntity.ok().headers(httpHeaders).contentType(MediaType.APPLICATION_PDF).body(eventService.userEventInform(id));
     }
 }
+

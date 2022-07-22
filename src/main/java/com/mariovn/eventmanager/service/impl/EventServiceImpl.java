@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.CollectionUtils;
 
 import com.itextpdf.text.Document;
@@ -197,7 +199,7 @@ public class EventServiceImpl implements EventService {
 
 				document.close();
 				
-				ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
+				ByteArrayInputStream input = new ByteArrayInputStream(Base64Utils.encode(output.toByteArray()));
 				
 				return new InputStreamResource(input);
 				
